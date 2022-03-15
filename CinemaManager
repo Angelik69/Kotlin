@@ -1,0 +1,86 @@
+package cinema
+
+fun main() {
+
+    // Création de la salle
+    println("Enter the number of rows:")
+    val rows = readln().toInt()
+    println("Enter the number of seats in each row:")
+    val seats = readln().toInt()
+    val salle: MutableList<MutableList<Char>> = mutableListOf()
+    repeat(rows) {
+        val rang = mutableListOf<Char>()
+        repeat(seats) { rang.add('S') }
+        salle.add(rang)
+    }
+
+    // Variables
+    var total_tickets = 0
+    var income = 0
+    val total_places = rows * seats
+    val total_income = if (total_places > 60) {
+        (rows / 2 * seats * 10) + ((rows - (rows / 2)) * seats * 8)
+    } else {
+        total_places * 10
+    }
+
+    // Afficher Salle
+    fun showTheSeats() {
+        println("\nCinema:")
+        print(" ")
+        for (i in 1..salle[0].size) print(" $i")
+        print("\n")
+        for (i in 0 until salle.size) {
+            print(i + 1)
+            for (j in 0 until salle[i].size) print(" ${salle[i][j]}")
+            print("\n")
+        }
+    }
+
+    // Acheter un ticket
+    fun buyTicket() {
+        var ok = false
+        while (!ok) {
+            println("\nEnter a row number:")
+            val row = readln().toInt()
+            println("Enter a seat number in that row:")
+            val seat = readln().toInt()
+            if (row in 1..rows && seat in 1..seats) {
+                if (salle[row - 1][seat - 1] == 'S') {
+                    val price = if (total_places > 60 && row > rows / 2) 8 else 10
+                    total_tickets++
+                    income += price
+                    salle[row - 1][seat - 1] = 'B'
+                    print("\nTicket price: \$$price")
+                    ok = true
+                } else println("\nThat ticket has already been purchased!")
+            } else println("\nWrong input!")
+        }
+    }
+
+    // Statistiques
+    fun showStats() {
+        println("\nNumber of purchased tickets: $total_tickets")
+        val percent = (100 * total_tickets / total_places.toDouble())
+        println("Percentage: ${String.format("%.2f", percent)}%")
+        println("Current Income: \$$income")
+        println("Total income: \$$total_income")
+    }
+
+    // Boucle Principale
+    while (true) {
+        println("\n1. Show the seats")
+        println("2. Buy a ticket")
+        println("3. Statistics")
+        println("0. Exit")
+        val choice = readln().toInt()
+        when (choice) {
+            1 -> showTheSeats()
+            2 -> buyTicket()
+            3 -> showStats()
+            else -> break
+        }
+    }
+
+
+}
